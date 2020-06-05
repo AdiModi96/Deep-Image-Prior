@@ -14,6 +14,6 @@ bsd_500_test_dataset_folder_path = os.path.join(bsd_500_dataset_folder_path, 'te
 bsd_500_validation_dataset_folder_path = os.path.join(bsd_500_dataset_folder_path, 'val')
 
 augmented_dataset_folder_path = os.path.join(data_folder_path, 'augmented')
-augmented_train_dataset_folder_path = os.path.join(bsd_500_dataset_folder_path, 'train')
-augmented_test_dataset_folder_path = os.path.join(bsd_500_dataset_folder_path, 'test')
-augmented_validation_dataset_folder_path = os.path.join(bsd_500_dataset_folder_path, 'val')
+augmented_train_dataset_folder_path = os.path.join(augmented_dataset_folder_path, 'train')
+augmented_test_dataset_folder_path = os.path.join(augmented_dataset_folder_path, 'test')
+augmented_validation_dataset_folder_path = os.path.join(augmented_dataset_folder_path, 'val')
