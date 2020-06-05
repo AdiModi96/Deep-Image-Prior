@@ -1,8 +1,8 @@
 import torch
 from torch import nn
-from model import UNET, EncoderDecoder
+from model import EncoderDecoder
 import os
-import project_paths as pp
+from src import paths as pp
 from matplotlib import pyplot as plt
 import numpy as np
 from dataloader import NoisyDataLoader

@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import os
-import project_paths as pp
+from src import paths as pp
 from model import UNET
 import torch
 from dataloader import NoisyDataLoader

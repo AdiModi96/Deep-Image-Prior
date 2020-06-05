@@ -1,12 +1,9 @@
-import torch
 from torch.utils.data import Dataset
-from torch import tensor
 import cv2
 import numpy as np
-from typing import List
 import os
 import sys
-import project_paths as pp
+from src import paths as pp
 
 
 class NoisyDataLoader(Dataset):

@@ -1,8 +1,8 @@
 import math
 import os
 import time
-import project_paths as pp
-from model import UNET, EncoderDecoder
+from src import paths as pp
+from model import UNET
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
