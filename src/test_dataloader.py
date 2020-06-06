@@ -1,5 +1,5 @@
 import random
-from dummy.utils.data import DataLoader
+from torch.utils.data import DataLoader
 from dataloader import NoisyDataLoader
 import matplotlib.pyplot as plt
 

@@ -16,8 +16,8 @@ hyper_paramaters = {
     'pretrained_model_file_path': None,
     'MODEL': {
         'BATCH_SIZE': 20,
-        'NUM_EPOCHS': 10,
-        'NUM_WORKERS': 5
+        'NUM_EPOCHS': 100,
+        'NUM_WORKERS': 1
     },
     'OPTIMIZER': {
         'LR': 0.0004,

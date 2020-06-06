@@ -3,7 +3,6 @@ import torch.nn as nn
 
 
 class UNET(nn.Module):
-
     input_channels = 1
 
     def __init__(self):
@@ -76,7 +75,6 @@ class UNET(nn.Module):
 
             nn.Conv2d(in_channels=16, out_channels=UNET.input_channels, kernel_size=3, stride=1, padding=1, padding_mode='replicate'),
         )
-
 
     def forward(self, tensor):
         # Encoder
