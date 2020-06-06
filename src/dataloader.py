@@ -13,7 +13,8 @@ class NoisyDataLoader(Dataset):
     TEST = 1
     VALIDATION = 2
 
-    PATCH_SIZE = (80, 80)
+    IMAGE_SIZE = 160
+    PATCH_SIZE = 80
     PIXELS_TO_MASK_PER_PATCH = 80
 
     def __init__(self, dataset_type=TEST):
@@ -40,21 +41,29 @@ class NoisyDataLoader(Dataset):
             sys.exit(0)
 
     def __len__(self):
-        return self.num_files
+        return 6 * self.num_files
 
     def shuffle(self):
         np.random.shuffle(self.image_file_paths)
 
     def __getitem__(self, idx):
-        output_image = cv2.imread(self.image_file_paths[idx], cv2.IMREAD_GRAYSCALE) / 255
-        # input_image = output_image.copy()
+        file_idx = idx // 6
+        patch_idx = idx % 6
+        image = np.asarray(cv2.imread(self.image_file_paths[file_idx], cv2.IMREAD_GRAYSCALE) / 255, dtype=np.float32)
+        if image.shape[0] < image.shape[1]:
+            i, j = patch_idx // 3, patch_idx % 3
+        else:
+            i, j = patch_idx // 2, patch_idx % 2
+        output_image = image[i * NoisyDataLoader.IMAGE_SIZE: (i + 1) * NoisyDataLoader.IMAGE_SIZE,
+                       j * NoisyDataLoader.IMAGE_SIZE: (j + 1) * NoisyDataLoader.IMAGE_SIZE]
+
         masked_input_image = output_image.copy()
-        for i in range(0, output_image.shape[0], NoisyDataLoader.PATCH_SIZE[0]):
-            for j in range(0, output_image.shape[1], NoisyDataLoader.PATCH_SIZE[0]):
-                target_idxes = np.asarray([i, j]) + np.random.randint(0, NoisyDataLoader.PATCH_SIZE[0],
+        for i in range(0, output_image.shape[0], NoisyDataLoader.PATCH_SIZE):
+            for j in range(0, output_image.shape[1], NoisyDataLoader.PATCH_SIZE):
+                target_idxes = np.asarray([i, j]) + np.random.randint(0, NoisyDataLoader.PATCH_SIZE,
                                                                       size=(NoisyDataLoader.PIXELS_TO_MASK_PER_PATCH, 2))
-                source_idxes = np.asarray([i, j]) + np.random.randint(0, NoisyDataLoader.PATCH_SIZE[0],
+                source_idxes = np.asarray([i, j]) + np.random.randint(0, NoisyDataLoader.PATCH_SIZE,
                                                                       size=(NoisyDataLoader.PIXELS_TO_MASK_PER_PATCH, 2))
                 masked_input_image[target_idxes[:, 0], target_idxes[:, 1]] = output_image[source_idxes[:, 0], source_idxes[:, 1]]
 
-        return masked_input_image, output_image
+        return np.expand_dims(masked_input_image, axis=0), np.expand_dims(output_image, axis=0)

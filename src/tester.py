@@ -1,36 +1,20 @@
 import torch
-from torch import nn
-from model import EncoderDecoder
+from model import UNET
 import os
-from src import paths as pp
+import paths as pp
 from matplotlib import pyplot as plt
-import numpy as np
 from dataloader import NoisyDataLoader
 import random
 
 
-def test(noise_type):
-
+def test():
     global test_dataset
-    if noise_type == NoisyDataLoader.GAUSSIAN:
-        test_dataset = NoisyDataLoader(dataset_type=NoisyDataLoader.TEST,
-                                       noisy_per_image=1,
-                                       noise_type=NoisyDataLoader.GAUSSIAN)
-    elif noise_type == NoisyDataLoader.TEXT_OVERLAY:
-        test_dataset = NoisyDataLoader(dataset_type=NoisyDataLoader.TEST,
-                                       noisy_per_image=1,
-                                       noise_type=NoisyDataLoader.TEXT_OVERLAY)
-    elif noise_type == NoisyDataLoader.SALT_PEPPER:
-        test_dataset = NoisyDataLoader(dataset_type=NoisyDataLoader.TEST,
-                                       noisy_per_image=1,
-                                       noise_type=NoisyDataLoader.SALT_PEPPER)
-    else:
-        return
+    test_dataset = NoisyDataLoader(dataset_type=NoisyDataLoader.TEST)
 
     # Initializing network
-    network = EncoderDecoder()
-    network = nn.DataParallel(network)
-    instance = '010'
+    network = UNET()
+    network.to('cpu')
+    instance = '000'
     pretrained_model_folder_path = os.path.join(pp.trained_models_folder_path, 'Instance_' + instance)
     for pretrained_model_file_name in os.listdir(pretrained_model_folder_path):
         try:
@@ -45,38 +29,26 @@ def test(noise_type):
             continue
 
         idx = random.randint(0, len(test_dataset))
-        noisy_image, clean_image = test_dataset[idx]
-        predicted_image = network(torch.unsqueeze(torch.as_tensor(noisy_image), dim=0))[0]
+        input_image, output_image = test_dataset[idx]
+        predicted_image = network(torch.unsqueeze(torch.as_tensor(input_image), dim=0))[0]
+        predicted_image = predicted_image.detach().numpy()
 
-        clean_image = NoisyDataLoader.convert_model_output_to_image(clean_image)
-        noisy_image = NoisyDataLoader.convert_model_output_to_image(noisy_image)
-        predicted_image = NoisyDataLoader.convert_model_output_to_image(predicted_image)
+        plt.figure(num='Network Performance using weights at {}'.format(pretrained_model_file_name), figsize=(20, 10))
 
-        plt.figure(num='Network Performance using weights at {}'.format(pretrained_model_file_name), figsize=(20, 20))
-
-        plt.subplot(2, 2, 1)
-        plt.imshow(clean_image, cmap='gray')
-        plt.colorbar()
-        plt.title('Original Image')
-
-        plt.subplot(2, 2, 2)
-        plt.imshow(noisy_image, cmap='gray')
+        plt.subplot(1, 2, 1)
+        plt.imshow(output_image[0], cmap='gray')
         plt.colorbar()
         plt.title('Noisy Image')
 
-        plt.subplot(2, 2, 3)
-        plt.imshow(predicted_image, cmap='gray')
+        plt.subplot(1, 2, 2)
+        plt.imshow(predicted_image[0], cmap='gray')
         plt.colorbar()
-        plt.title('Predicted Image')
+        plt.title('Denoised Image')
 
-        plt.subplot(2, 2, 4)
-        plt.imshow(np.sqrt(np.sum((clean_image - predicted_image) ** 2, axis=2)), cmap='gray')
-        plt.title('Euclidean Distance')
-        plt.colorbar()
         plt.show()
 
 
 if __name__ == '__main__':
     print('Commencing Testing')
-    test(NoisyDataLoader.GAUSSIAN)
+    test()
     print('Testing Completed')
