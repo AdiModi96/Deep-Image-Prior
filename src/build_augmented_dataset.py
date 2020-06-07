@@ -7,6 +7,7 @@ IMAGE_FILE_EXTENSIONS = ['.jpg', '.png', '.jpeg']
 
 def augment_from_image(image):
     augmented_images = {}
+    augmentation_idx = 0
     rotated_image = None
     for i in range(4):
         if i > 0:
@@ -15,9 +16,11 @@ def augment_from_image(image):
             rotated_image = image
 
         mirrored_rotated_image = rotated_image.copy()
-        augmented_images['{}_{}'.format(i, 0)] = mirrored_rotated_image
+        augmented_images['{}'.format(augmentation_idx)] = mirrored_rotated_image
+        augmentation_idx += 1
         mirrored_rotated_image = cv2.flip(rotated_image, flipCode=1)
-        augmented_images['{}_{}'.format(i, 1)] = mirrored_rotated_image
+        augmented_images['{}'.format(augmentation_idx)] = mirrored_rotated_image
+        augmentation_idx += 1
 
     return augmented_images
 

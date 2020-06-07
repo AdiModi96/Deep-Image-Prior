@@ -3,9 +3,11 @@ from torch.utils.data import DataLoader
 from dataloader import NoisyDataLoader
 import matplotlib.pyplot as plt
 
-BATCH_SIZE = 120
-dataset = NoisyDataLoader()
-
+BATCH_SIZE = 128
+dataset = NoisyDataLoader(dataset_type=NoisyDataLoader.VALIDATION,
+                          masking_type=NoisyDataLoader.MASKING_FIXED_VALUE,
+                          masking_fixed_value=0.5)
+dataset.shuffle()
 batcher = DataLoader(dataset=dataset,
                      batch_size=BATCH_SIZE)
 batch = next(iter(batcher))

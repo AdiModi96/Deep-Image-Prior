@@ -1,10 +1,10 @@
 import torch
-from model import UNET
+from models import UNET_Heavy, UNET_Lite
 import os
-import paths as pp
+import numpy as np
+import paths
 from matplotlib import pyplot as plt
 from dataloader import NoisyDataLoader
-import random
 
 
 def test():
@@ -12,10 +12,11 @@ def test():
     test_dataset = NoisyDataLoader(dataset_type=NoisyDataLoader.TEST)
 
     # Initializing network
-    network = UNET()
+    network = UNET_Lite()
     network.to('cpu')
-    instance = '000'
-    pretrained_model_folder_path = os.path.join(pp.trained_models_folder_path, 'Instance_' + instance)
+    network.eval()
+    instance = '004'
+    pretrained_model_folder_path = os.path.join(paths.trained_models_folder_path, 'Instance_' + instance)
     for pretrained_model_file_name in os.listdir(pretrained_model_folder_path):
         try:
             if pretrained_model_file_name.endswith('.pt'):
@@ -28,22 +29,23 @@ def test():
             print('Unable to load network with weights from:', pretrained_model_file_name)
             continue
 
-        idx = random.randint(0, len(test_dataset))
-        input_image, output_image = test_dataset[idx]
-        predicted_image = network(torch.unsqueeze(torch.as_tensor(input_image), dim=0))[0]
-        predicted_image = predicted_image.detach().numpy()
+        idxes = np.random.randint(0, len(test_dataset), size=15)
+        plt.figure(num='Network Performance using weights at {}'.format(pretrained_model_file_name), figsize=(60, 50))
+        plt.suptitle('Noisy Image vs Denoised Image')
 
-        plt.figure(num='Network Performance using weights at {}'.format(pretrained_model_file_name), figsize=(20, 10))
+        for i in range(15):
+            input_image, output_image = test_dataset[idxes[i]]
+            predicted_image = network(torch.unsqueeze(torch.as_tensor(input_image), dim=0))[0]
+            predicted_image = predicted_image.detach().numpy()
+            predicted_image = (predicted_image - predicted_image.min()) / (predicted_image.max() - predicted_image.min())
 
-        plt.subplot(1, 2, 1)
-        plt.imshow(output_image[0], cmap='gray')
-        plt.colorbar()
-        plt.title('Noisy Image')
+            plt.subplot(5, 6, (2 * i) + 1)
+            plt.imshow(output_image[0], cmap='gray')
+            # plt.title('Noisy Image')
 
-        plt.subplot(1, 2, 2)
-        plt.imshow(predicted_image[0], cmap='gray')
-        plt.colorbar()
-        plt.title('Denoised Image')
+            plt.subplot(5, 6, (2 * i) + 2)
+            plt.imshow(predicted_image[0], cmap='gray')
+            # plt.title('Denoised Image')
 
         plt.show()
 
