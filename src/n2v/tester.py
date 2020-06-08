@@ -1,9 +1,9 @@
-import torch
-from n2v.models import UNET_Lite
 import os
 import numpy as np
 from matplotlib import pyplot as plt
-from dataloader import Noise2VoidDataLoader
+import torch
+from n2v.models import FCNN
+from dataset import Noise2Void
 import sys
 
 sys.path.append('..')
@@ -12,10 +12,10 @@ import paths
 
 def test():
     global test_dataset
-    test_dataset = Noise2VoidDataLoader(dataset_type=Noise2VoidDataLoader.TEST)
+    test_dataset = Noise2Void(dataset_type=Noise2Void.TEST)
 
     # Initializing network
-    network = UNET_Lite()
+    network = FCNN()
     network.to('cpu')
     network.eval()
     instance = '005'
