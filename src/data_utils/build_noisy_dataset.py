@@ -1,13 +1,15 @@
 import cv2
-import paths
 import os
 import numpy as np
+import sys
 
+sys.path.append('..')
+import paths
 
 IMAGE_FILE_EXTENSIONS = ['.jpg', '.png', '.jpeg']
 NOISE_PARAMS = {
     'MEAN': 0.0,
-    'STD': 0.05
+    'STD': 0.1
 }
 
 for dataset_type in ['train', 'test', 'val']:
@@ -15,7 +17,7 @@ for dataset_type in ['train', 'test', 'val']:
     source_dataset_folder_path = os.path.join(paths.bsd_500_dataset_folder_path, dataset_type)
     target_dataset_folder_path = os.path.join(paths.noisy_dataset_folder_path, dataset_type)
 
-    if not os.path.exists(target_dataset_folder_path):
+    if not os.path.isdir(target_dataset_folder_path):
         os.makedirs(target_dataset_folder_path)
 
     for source_image_file_name in os.listdir(source_dataset_folder_path):

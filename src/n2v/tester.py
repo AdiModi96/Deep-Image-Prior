@@ -1,21 +1,24 @@
 import torch
-from models import UNET_Heavy, UNET_Lite
+from n2v.models import UNET_Lite
 import os
 import numpy as np
-import paths
 from matplotlib import pyplot as plt
-from dataloader import NoisyDataLoader
+from dataloader import Noise2VoidDataLoader
+import sys
+
+sys.path.append('..')
+import paths
 
 
 def test():
     global test_dataset
-    test_dataset = NoisyDataLoader(dataset_type=NoisyDataLoader.TEST)
+    test_dataset = Noise2VoidDataLoader(dataset_type=Noise2VoidDataLoader.TEST)
 
     # Initializing network
     network = UNET_Lite()
     network.to('cpu')
     network.eval()
-    instance = '004'
+    instance = '005'
     pretrained_model_folder_path = os.path.join(paths.trained_models_folder_path, 'Instance_' + instance)
     for pretrained_model_file_name in os.listdir(pretrained_model_folder_path):
         try:

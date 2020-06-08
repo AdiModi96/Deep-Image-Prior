@@ -1,9 +1,12 @@
 import cv2
-import paths
 import os
+import sys
 
+sys.path.append('..')
+import paths
 
 IMAGE_FILE_EXTENSIONS = ['.jpg', '.png', '.jpeg']
+
 
 def augment_from_image(image):
     augmented_images = {}
@@ -24,11 +27,12 @@ def augment_from_image(image):
 
     return augmented_images
 
+
 for dataset_type in ['train', 'test', 'val']:
     source_dataset_folder_path = os.path.join(paths.noisy_dataset_folder_path, dataset_type)
     target_dataset_folder_path = os.path.join(paths.augmented_dataset_folder_path, dataset_type)
 
-    if not os.path.exists(target_dataset_folder_path):
+    if not os.path.isdir(target_dataset_folder_path):
         os.makedirs(target_dataset_folder_path)
 
     for source_image_file_name in os.listdir(source_dataset_folder_path):
