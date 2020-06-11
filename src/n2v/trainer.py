@@ -7,7 +7,8 @@ from torch import optim
 from torch import backends
 from torch.utils.data import DataLoader
 from dataset import Noise2Void
-from models import FCNN
+from torchsummary import summary
+from models import UNET_Lite
 
 sys.path.append('..')
 import paths
@@ -20,15 +21,15 @@ hyper_paramaters = {
     'PRETRAINED_MODEL_WEIGHTS_FILE_PATH': None,
     'NETWORK': None,
     'MODEL': {
-        'BATCH_SIZE': 30,
+        'BATCH_SIZE': 40,
         'NUM_EPOCHS': 100,
         'NUM_WORKERS': 10
     },
     'OPTIMIZER': {
         'LR': 0.0004,
         'MOMENTUM': 0.9,
-        'LOSS_FUNCTION': 'L1'
-        # 'LOSS_FUNCTION': 'MSE'
+        # 'LOSS_FUNCTION': 'L1'
+        'LOSS_FUNCTION': 'MSE'
     }
 }
 
@@ -44,7 +45,7 @@ else:
 
 def train():
     # Initializing network
-    network = FCNN()
+    network = UNET_Lite()
 
     hyper_paramaters['NETWORK'] = str(network)
     try:
@@ -57,9 +58,9 @@ def train():
 
     # Finding instance folder path
     instance = 0
-    while os.path.isdir(os.path.join(paths.trained_models_folder_path, 'Instance_' + str(instance).zfill(3))):
+    while os.path.isdir(os.path.join(paths.trained_models_folder_path, 'n2v', 'Instance_' + str(instance).zfill(3))):
         instance += 1
-    instance_folder_path = os.path.join(paths.trained_models_folder_path, 'Instance_' + str(instance).zfill(3))
+    instance_folder_path = os.path.join(paths.trained_models_folder_path, 'n2v', 'Instance_' + str(instance).zfill(3))
     os.makedirs(instance_folder_path)
     if not os.path.isdir(paths.trained_models_folder_path):
         os.makedirs(paths.trained_models_folder_path)
@@ -70,6 +71,8 @@ def train():
 
     # Shifting network to appropriate device
     network.to(hyper_paramaters['MODEL']['DEVICE'])
+    print('Model Summary:')
+    print(summary(model=network, input_size=(1, 160, 160)))
     # Setting network in training mode
     network.train()
 
@@ -113,10 +116,10 @@ def train():
 
             loss = loss_function(predicted_image, output_image)
 
-            epoch_loss += loss
-            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            optimizer.zero_grad()
+            epoch_loss += loss
 
             print('\tBatch (Train) Loss:', loss)
             print()

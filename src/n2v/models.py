@@ -57,7 +57,7 @@ class UNET_Heavy(nn.Module):
         )
 
         self.decoder_block_1 = nn.Sequential(
-            nn.Conv2d(in_channels=192, out_channels=64, kernel_size=3, stride=1, padding=1, padding_mode='replicate'),
+            nn.Conv2d(in_channels=128, out_channels=64, kernel_size=3, stride=1, padding=1, padding_mode='replicate'),
             nn.BatchNorm2d(num_features=64),
             nn.ReLU(inplace=True),
 
@@ -102,44 +102,44 @@ class UNET_Lite(nn.Module):
 
         self.encoder_block_1 = nn.Sequential(
             nn.Conv2d(in_channels=UNET_Lite.input_channels, out_channels=32, kernel_size=3, stride=1, padding=1, padding_mode='replicate', bias=True),
-            nn.BatchNorm2d(num_features=32),
             nn.ReLU(inplace=True),
+            nn.BatchNorm2d(num_features=32),
         )
 
         self.encoder_block_2 = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
             nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1, padding_mode='replicate', bias=True),
+            nn.ReLU(inplace=True),
             nn.BatchNorm2d(num_features=64),
-            nn.ReLU(inplace=True)
         )
 
         self.bottleneck = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
             nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=1, padding_mode='replicate', bias=True),
-            nn.BatchNorm2d(num_features=128),
             nn.ReLU(inplace=True),
+            nn.BatchNorm2d(num_features=128),
 
             nn.Conv2d(in_channels=128, out_channels=64, kernel_size=3, stride=1, padding=1, padding_mode='replicate', bias=True),
-            nn.BatchNorm2d(num_features=64),
             nn.ReLU(inplace=True),
+            nn.BatchNorm2d(num_features=64),
 
             nn.UpsamplingBilinear2d(scale_factor=2)
         )
 
         self.decoder_block_2 = nn.Sequential(
             nn.Conv2d(in_channels=128, out_channels=32, kernel_size=3, stride=1, padding=1, padding_mode='replicate'),
-            nn.BatchNorm2d(num_features=32),
             nn.ReLU(inplace=True),
+            nn.BatchNorm2d(num_features=32),
 
             nn.UpsamplingBilinear2d(scale_factor=2)
         )
 
         self.decoder_block_1 = nn.Sequential(
             nn.Conv2d(in_channels=64, out_channels=32, kernel_size=3, stride=1, padding=1, padding_mode='replicate'),
-            nn.BatchNorm2d(num_features=32),
             nn.ReLU(inplace=True),
+            nn.BatchNorm2d(num_features=32),
 
             nn.Conv2d(in_channels=32, out_channels=UNET_Lite.input_channels, kernel_size=3, stride=1, padding=1, padding_mode='replicate'),
         )
@@ -213,3 +213,71 @@ class FCNN(nn.Module):
 
     def forward(self, tensor):
         return self.decoder(self.encoder(tensor))
+
+
+class ResNET_Lite(nn.Module):
+    input_channels = 1
+
+    def __init__(self):
+        super().__init__()
+
+        self.encoder_block_1 = nn.Sequential(
+            nn.Conv2d(in_channels=ResNET_Lite.input_channels, out_channels=64, kernel_size=3, stride=1, padding=1, padding_mode='replicate', bias=True),
+            nn.BatchNorm2d(num_features=64),
+            nn.ReLU(inplace=True),
+        )
+
+        self.encoder_block_2 = nn.Sequential(
+            nn.MaxPool2d(kernel_size=2),
+
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=1, padding_mode='replicate', bias=True),
+            nn.BatchNorm2d(num_features=128),
+            nn.ReLU(inplace=True)
+        )
+
+        self.bottleneck = nn.Sequential(
+            nn.MaxPool2d(kernel_size=2),
+
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, stride=1, padding=1, padding_mode='replicate', bias=True),
+            nn.BatchNorm2d(num_features=256),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(in_channels=256, out_channels=128, kernel_size=3, stride=1, padding=1, padding_mode='replicate', bias=True),
+            nn.BatchNorm2d(num_features=128),
+            nn.ReLU(inplace=True),
+
+            nn.UpsamplingBilinear2d(scale_factor=2)
+        )
+
+        self.decoder_block_2 = nn.Sequential(
+            nn.Conv2d(in_channels=128, out_channels=64, kernel_size=3, stride=1, padding=1, padding_mode='replicate'),
+            nn.BatchNorm2d(num_features=64),
+            nn.ReLU(inplace=True),
+
+            nn.UpsamplingBilinear2d(scale_factor=2)
+        )
+
+        self.decoder_block_1 = nn.Sequential(
+            nn.Conv2d(in_channels=64, out_channels=32, kernel_size=3, stride=1, padding=1, padding_mode='replicate'),
+            nn.BatchNorm2d(num_features=32),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(in_channels=32, out_channels=ResNET_Lite.input_channels, kernel_size=3, stride=1, padding=1, padding_mode='replicate'),
+        )
+
+    def __repr__(self):
+        return 'ResNET_Lite'
+
+    def forward(self, tensor):
+        # Encoder
+        encoder_block_1_tensor = self.encoder_block_1(tensor)
+        encoder_block_2_tensor = self.encoder_block_2(encoder_block_1_tensor)
+
+        # Bottleneck
+        tensor = self.bottleneck(encoder_block_2_tensor)
+
+        # Decoder
+        tensor = self.decoder_block_2(tensor + encoder_block_2_tensor)
+        tensor = self.decoder_block_1(tensor + encoder_block_1_tensor)
+
+        return tensor

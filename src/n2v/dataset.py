@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+import torch
 from torch.utils.data import Dataset
 import sys
 
@@ -12,8 +13,8 @@ class Noise2Void(Dataset):
     IMAGE_FILE_EXTENSIONS = ['.jpg', '.png', '.jpeg']
 
     TRAIN = 0
-    TEST = 1
-    VALIDATION = 2
+    VALIDATION = 1
+    TEST = 2
 
     IMAGE_SIZE = 160
     NUM_PATCHES = 10
@@ -32,10 +33,10 @@ class Noise2Void(Dataset):
 
         if dataset_type == Noise2Void.TRAIN:
             self.images_folder_path = os.path.join(paths.augmented_dataset_folder_path, 'train')
-        if dataset_type == Noise2Void.TEST:
-            self.images_folder_path = os.path.join(paths.augmented_dataset_folder_path, 'test')
-        if dataset_type == Noise2Void.VALIDATION:
+        elif dataset_type == Noise2Void.VALIDATION:
             self.images_folder_path = os.path.join(paths.augmented_dataset_folder_path, 'val')
+        elif dataset_type == Noise2Void.TEST:
+            self.images_folder_path = os.path.join(paths.augmented_dataset_folder_path, 'test')
 
         self.masking_type = masking_type
         if self.masking_type == Noise2Void.MASKING_FIXED_VALUE:
@@ -86,4 +87,5 @@ class Noise2Void(Dataset):
             elif self.masking_type == Noise2Void.MASKING_FIXED_VALUE:
                 masked_input_image[target_idxes[:, 0], target_idxes[:, 1]] = self.masking_fixed_value
 
-        return np.expand_dims(output_image, axis=0), np.expand_dims(masked_input_image, axis=0)
+        return torch.unsqueeze(torch.as_tensor(masked_input_image, dtype=torch.float32), dim=0),\
+               torch.unsqueeze(torch.as_tensor(output_image, dtype=torch.float32), dim=0)
