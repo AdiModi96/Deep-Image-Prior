@@ -13,7 +13,23 @@ class DeepImagePrior(Dataset):
     TRAIN = 0
     VALIDATION = 1
     TEST = 2
-    DATASET_SIZE = 1000
+    VIRTUAL_DATASET_SIZE = 1000
+
+    @staticmethod
+    def channels_first(image):
+        return np.transpose(image, (2, 0, 1))
+
+    @staticmethod
+    def channels_last(image):
+        return np.transpose(image, (1, 2, 0))
+
+    @staticmethod
+    def from_torch_to_numpy(tensor):
+        return tensor.to('cpu').detach().numpy()
+
+    @staticmethod
+    def from_numpy_to_torch(tensor):
+        return torch.tensor(tensor)
 
     def __init__(self, dataset_type=TRAIN, image_idx=None):
 
@@ -32,18 +48,19 @@ class DeepImagePrior(Dataset):
             image_idx = np.random.randint(0, len(image_file_names))
 
         self.image_file_path = os.path.join(images_folder_path, image_file_names[image_idx])
-        self.output_image = cv2.imread(self.image_file_path, cv2.IMREAD_GRAYSCALE) / 255
-        self.input_image = np.random.normal(loc=self.output_image.mean(), scale=0.001, size=self.output_image.shape)
-        # self.input_image = np.full_like(self.output_image, fill_value=0.5)
+        self.output_image = cv2.imread(self.image_file_path, cv2.IMREAD_COLOR) / 255
+        self.input_image = cv2.GaussianBlur(self.output_image, ksize=(51, 51), sigmaX=15, sigmaY=15)
 
-        self.torch_output_tensor = torch.tensor(self.output_image, dtype=torch.float32)
-        self.torch_input_tensor = torch.tensor(self.input_image, dtype=torch.float32)
+        self.torch_output_image = torch.tensor(DeepImagePrior.channels_first(self.output_image), dtype=torch.float32)
+        self.torch_input_image = torch.tensor(DeepImagePrior.channels_first(self.input_image), dtype=torch.float32)
+
+        self.batch = (torch.unsqueeze(self.torch_input_image, dim=0), torch.unsqueeze(self.torch_output_image, dim=0))
 
     def __len__(self):
-        return DeepImagePrior.DATASET_SIZE
+        return DeepImagePrior.VIRTUAL_DATASET_SIZE
 
     def get_batch(self):
-        return torch.unsqueeze(torch.unsqueeze(self.torch_input_tensor, dim=0), dim=0), torch.unsqueeze(torch.unsqueeze(self.torch_output_tensor, dim=0), dim=0)
+        return self.batch
 
     def __getitem__(self, idx):
         return self.input_image, self.output_image
