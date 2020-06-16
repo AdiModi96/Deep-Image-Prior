@@ -1,5 +1,5 @@
 import numpy as np
-from dataset import DeepImagePrior
+from datasets import BSD500
 import matplotlib.pyplot as plt
 
 
@@ -35,6 +35,6 @@ def test_instance(db=None):
 
     plt.show()
 
-db = DeepImagePrior(dataset_type=DeepImagePrior.TRAIN)
+db = BSD500(dataset_type=BSD500.TRAIN)
 test_batch(db)
 # test_instance(db)

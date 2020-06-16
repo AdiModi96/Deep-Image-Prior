@@ -29,8 +29,8 @@ def augment_from_image(image):
 
 
 for dataset_type in ['train', 'test', 'val']:
-    source_dataset_folder_path = os.path.join(paths.noisy_dataset_folder_path, dataset_type)
-    target_dataset_folder_path = os.path.join(paths.augmented_dataset_folder_path, dataset_type)
+    source_dataset_folder_path = os.path.join(paths.bsd_500_noisy_dataset_folder_path, dataset_type)
+    target_dataset_folder_path = os.path.join(paths.bsd_500_augmented_dataset_folder_path, dataset_type)
 
     if not os.path.isdir(target_dataset_folder_path):
         os.makedirs(target_dataset_folder_path)

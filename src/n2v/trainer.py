@@ -6,7 +6,7 @@ import json
 from torch import optim
 from torch import backends
 from torch.utils.data import DataLoader
-from dataset import Noise2Void
+from datasets import Noise2Void
 from torchsummary import summary
 from models import UNET_Lite
 

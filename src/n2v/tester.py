@@ -2,7 +2,7 @@ import os
 import numpy as np
 from matplotlib import pyplot as plt
 import torch
-from dataset import Noise2Void
+from datasets import Noise2Void
 from models import UNET_Lite
 import sys
 

@@ -14,8 +14,8 @@ NOISE_PARAMS = {
 
 for dataset_type in ['train', 'test', 'val']:
     image_idx = 0
-    source_dataset_folder_path = os.path.join(paths.bsd_500_dataset_folder_path, dataset_type)
-    target_dataset_folder_path = os.path.join(paths.noisy_dataset_folder_path, dataset_type)
+    source_dataset_folder_path = os.path.join(paths.bsd_500_original_dataset_folder_path, dataset_type)
+    target_dataset_folder_path = os.path.join(paths.bsd_500_noisy_dataset_folder_path, dataset_type)
 
     if not os.path.isdir(target_dataset_folder_path):
         os.makedirs(target_dataset_folder_path)

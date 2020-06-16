@@ -5,20 +5,19 @@ import torch
 import cv2
 from torch import optim
 from torch import backends
-from dataset import DeepImagePrior
+from datasets import Custom
 from models import UNET_D4
 
 sys.path.append('..')
 import paths
-
 
 # --------------------------------------------------------------
 # Hyper-parameters
 # --------------------------------------------------------------
 
 BATCH_SIZE = 40
-NUM_EPOCHS = 100
-LEARNING_RATE = 0.01
+NUM_EPOCHS = 2
+LEARNING_RATE = 0.001
 LOSS_FUNCTION = torch.nn.MSELoss()
 DEVICE = 'cpu'
 
@@ -28,6 +27,7 @@ if torch.cuda.is_available():
     torch.cuda.init()
     backends.cudnn.benchmark = True
 
+
 # --------------------------------------------------------------
 
 
@@ -35,6 +35,13 @@ def train():
     # Initializing network
     network = UNET_D4()
     network.to(DEVICE)
+    network.train()
+
+    # Initializing dataset
+    dataset = Custom(image_idx=3)
+
+    # Defining optimizer
+    optimizer = optim.Adam(network.parameters(), lr=LEARNING_RATE)
 
     # Finding instance folder path
     instance = 0
@@ -45,22 +52,12 @@ def train():
     if not os.path.isdir(paths.trained_models_folder_path):
         os.makedirs(paths.trained_models_folder_path)
 
-    # print('Model Summary:')
-    # print(summary(model=network, input_size=(1, 160, 160)))
-    # Setting network in training mode
-    network.train()
-
-    # Initializing dataset
-    dataset = DeepImagePrior(dataset_type=DeepImagePrior.TRAIN, image_idx=76)
-
-    # Defining optimizer
-    optimizer = optim.SGD(network.parameters(), lr=LEARNING_RATE)
+    cv2.imwrite(os.path.join(instance_folder_path, '000 - input.png'), dataset[0][0] * 255)
+    cv2.imwrite(os.path.join(instance_folder_path, '999 - output.png'), dataset[0][1] * 255)
+    dataset.indexing_mode(Custom.INDEXING_MODE_BATCH)
 
     model_idx = 0
     loss_threshold = 0.5
-
-    cv2.imwrite(os.path.join(instance_folder_path, '000 - input.png'), dataset[0][0] * 255)
-    cv2.imwrite(os.path.join(instance_folder_path, '999 - output.png'), dataset[0][1] * 255)
 
     for epoch_idx in range(NUM_EPOCHS):
         epoch_start_time = time.time()
@@ -75,7 +72,7 @@ def train():
             print('\tProcessing Batch: {} of {}...'.format(batch_idx + 1, len(dataset)))
             batch_idx += 1
 
-            input_image, output_image = dataset.get_batch()
+            input_image, output_image = dataset[batch_idx]
             input_image = input_image.to(DEVICE)
             output_image = output_image.to(DEVICE)
 
@@ -84,7 +81,10 @@ def train():
             loss = torch.nn.MSELoss()(predicted_image, output_image)
             if loss < loss_threshold:
                 loss_threshold /= 1.1
-                cv2.imwrite(os.path.join(instance_folder_path, '{} - Loss_{}.png'.format(str(model_idx).zfill(3), round(loss.item(), 5))), DeepImagePrior.channels_last(DeepImagePrior.from_torch_to_numpy(predicted_image[0])) * 255)
+                cv2.imwrite(os.path.join(instance_folder_path, '{} - Iterations_{} - Loss_{}.png'.format(str(model_idx).zfill(3),
+                                                                                                         epoch_idx * len(dataset) + batch_idx + 1,
+                                                                                                         round(loss.item(), 5))),
+                            Custom.channels_last(Custom.from_torch_to_numpy(predicted_image[0])) * 255)
                 # torch.save(network.state_dict(), os.path.join(instance_folder_path, '{} - Loss_{}.pt'.format(str(model_idx).zfill(3), round(loss.item(), 5))))
                 model_idx += 1
 

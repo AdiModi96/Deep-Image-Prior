@@ -1,6 +1,6 @@
 import numpy as np
 from torch.utils.data import DataLoader
-from dataset import Noise2Void
+from datasets import Noise2Void
 import matplotlib.pyplot as plt
 
 
