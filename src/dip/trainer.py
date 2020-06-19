@@ -5,7 +5,7 @@ import torch
 import cv2
 from torch import optim
 from torch import backends
-from datasets import Custom
+from datasets import BSD500
 from models import UNET_D4
 
 sys.path.append('..')
@@ -38,7 +38,7 @@ def train():
     network.train()
 
     # Initializing dataset
-    dataset = Custom(image_idx=3)
+    dataset = BSD500(image_idx=102)
 
     # Defining optimizer
     optimizer = optim.Adam(network.parameters(), lr=LEARNING_RATE)
@@ -54,7 +54,7 @@ def train():
 
     cv2.imwrite(os.path.join(instance_folder_path, '000 - input.png'), dataset[0][0] * 255)
     cv2.imwrite(os.path.join(instance_folder_path, '999 - output.png'), dataset[0][1] * 255)
-    dataset.indexing_mode(Custom.INDEXING_MODE_BATCH)
+    dataset.indexing_mode(BSD500.INDEXING_MODE_BATCH)
 
     model_idx = 0
     loss_threshold = 0.5
@@ -84,7 +84,7 @@ def train():
                 cv2.imwrite(os.path.join(instance_folder_path, '{} - Iterations_{} - Loss_{}.png'.format(str(model_idx).zfill(3),
                                                                                                          epoch_idx * len(dataset) + batch_idx + 1,
                                                                                                          round(loss.item(), 5))),
-                            Custom.channels_last(Custom.from_torch_to_numpy(predicted_image[0])) * 255)
+                            BSD500.channels_last(BSD500.from_torch_to_numpy(predicted_image[0])) * 255)
                 # torch.save(network.state_dict(), os.path.join(instance_folder_path, '{} - Loss_{}.pt'.format(str(model_idx).zfill(3), round(loss.item(), 5))))
                 model_idx += 1
 
