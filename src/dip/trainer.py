@@ -6,7 +6,7 @@ import cv2
 from torch import optim
 from torch import backends
 from datasets import BSD500
-from models import UNET_D4
+from models import CNN_D5
 
 sys.path.append('..')
 import paths
@@ -15,8 +15,7 @@ import paths
 # Hyper-parameters
 # --------------------------------------------------------------
 
-BATCH_SIZE = 40
-NUM_EPOCHS = 2
+NUM_EPOCHS = 10
 LEARNING_RATE = 0.001
 LOSS_FUNCTION = torch.nn.MSELoss()
 DEVICE = 'cpu'
@@ -33,24 +32,24 @@ if torch.cuda.is_available():
 
 def train():
     # Initializing network
-    network = UNET_D4()
+    network = CNN_D5()
     network.to(DEVICE)
     network.train()
 
     # Initializing dataset
-    dataset = BSD500(image_idx=102)
+    dataset = BSD500(image_idx=100)
 
     # Defining optimizer
     optimizer = optim.Adam(network.parameters(), lr=LEARNING_RATE)
 
     # Finding instance folder path
     instance = 0
-    while os.path.isdir(os.path.join(paths.trained_models_folder_path, 'dip', 'Instance_' + str(instance).zfill(3))):
+    while os.path.isdir(os.path.join(paths.results_folder_path, 'dip', 'Instance_' + str(instance).zfill(3))):
         instance += 1
-    instance_folder_path = os.path.join(paths.trained_models_folder_path, 'dip', 'Instance_' + str(instance).zfill(3))
+    instance_folder_path = os.path.join(paths.results_folder_path, 'dip', 'Instance_' + str(instance).zfill(3))
     os.makedirs(instance_folder_path)
-    if not os.path.isdir(paths.trained_models_folder_path):
-        os.makedirs(paths.trained_models_folder_path)
+    if not os.path.isdir(paths.results_folder_path):
+        os.makedirs(paths.results_folder_path)
 
     cv2.imwrite(os.path.join(instance_folder_path, '000 - input.png'), dataset[0][0] * 255)
     cv2.imwrite(os.path.join(instance_folder_path, '999 - output.png'), dataset[0][1] * 255)
@@ -79,7 +78,9 @@ def train():
             predicted_image = network(input_image)
 
             loss = torch.nn.MSELoss()(predicted_image, output_image)
-            if loss < loss_threshold:
+            if loss < 0.0001:
+                break
+            elif loss < loss_threshold:
                 loss_threshold /= 1.1
                 cv2.imwrite(os.path.join(instance_folder_path, '{} - Iterations_{} - Loss_{}.png'.format(str(model_idx).zfill(3),
                                                                                                          epoch_idx * len(dataset) + batch_idx + 1,

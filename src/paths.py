@@ -8,6 +8,7 @@ data_folder_path = os.path.join(project_folder_path, 'data')
 src_folder_path = os.path.join(project_folder_path, 'src')
 resrc_folder_path = os.path.join(project_folder_path, 'resrc')
 trained_models_folder_path = os.path.join(project_folder_path, 'trained models')
+results_folder_path = os.path.join(project_folder_path, 'results')
 
 # BSD500 Dataset
 bsd_500_dataset_folder_path = os.path.join(data_folder_path, 'BSD500')
