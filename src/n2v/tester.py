@@ -2,8 +2,8 @@ import os
 import numpy as np
 from matplotlib import pyplot as plt
 import torch
-from datasets import Noise2Void
-from models import UNET_Lite
+from datasets import BSD500
+from models import UNET_D2
 import sys
 
 sys.path.append('..')
@@ -12,10 +12,10 @@ import paths
 
 def test():
     global test_dataset
-    test_dataset = Noise2Void(dataset_type=Noise2Void.TEST)
+    test_dataset = BSD500(dataset_type=BSD500.TEST)
 
     # Initializing network
-    network = UNET_Lite()
+    network = UNET_D2()
     network.to('cpu')
     network.eval()
     instance = '000'
@@ -38,7 +38,7 @@ def test():
 
         for i in range(15):
             input_image, output_image = test_dataset[idxes[i]]
-            predicted_image = network(torch.unsqueeze(torch.as_tensor(input_image), dim=0))[0]
+            predicted_image = network(torch.unsqueeze(input_image, dim=0))[0]
             predicted_image = predicted_image.detach().numpy()
             # predicted_image = (predicted_image - predicted_image.min()) / (predicted_image.max() - predicted_image.min())
 

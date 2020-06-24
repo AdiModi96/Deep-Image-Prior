@@ -1,14 +1,14 @@
+import json
 import os
 import sys
 import time
+
 import torch
-import json
 from torch import optim
-from torch import backends
 from torch.utils.data import DataLoader
-from datasets import Noise2Void
-from torchsummary import summary
-from models import UNET_Lite
+
+from datasets import BSD500
+from models import UNET_D2
 
 sys.path.append('..')
 import paths
@@ -21,31 +21,32 @@ hyper_paramaters = {
     'PRETRAINED_MODEL_WEIGHTS_FILE_PATH': None,
     'NETWORK': None,
     'MODEL': {
-        'BATCH_SIZE': 40,
-        'NUM_EPOCHS': 100,
+        'BATCH_SIZE': 10,
+        'NUM_EPOCHS': 10,
         'NUM_WORKERS': 10
     },
     'OPTIMIZER': {
-        'LR': 0.0004,
+        'LR': 0.0001,
         'MOMENTUM': 0.9,
         # 'LOSS_FUNCTION': 'L1'
         'LOSS_FUNCTION': 'MSE'
     }
 }
 
-if torch.cuda.is_available():
-    hyper_paramaters['MODEL']['DEVICE'] = 'cuda'
-    torch.cuda.init()
-    backends.cudnn.benchmark = True
-else:
-    hyper_paramaters['MODEL']['DEVICE'] = 'cpu'
+# if torch.cuda.is_available():
+#     hyper_paramaters['MODEL']['DEVICE'] = 'cuda'
+#     torch.cuda.init()
+#     backends.cudnn.benchmark = True
+# else:
+#     hyper_paramaters['MODEL']['DEVICE'] = 'cpu'
+hyper_paramaters['MODEL']['DEVICE'] = 'cpu'
 
 
 # --------------------------------------------------------------
 
 def train():
     # Initializing network
-    network = UNET_Lite()
+    network = UNET_D2()
 
     hyper_paramaters['NETWORK'] = str(network)
     try:
@@ -71,13 +72,12 @@ def train():
 
     # Shifting network to appropriate device
     network.to(hyper_paramaters['MODEL']['DEVICE'])
-    print('Model Summary:')
-    print(summary(model=network, input_size=(1, 160, 160)))
+
     # Setting network in training mode
     network.train()
 
     # Initializing dataset
-    dataset = Noise2Void(dataset_type=Noise2Void.TRAIN, masking_type=Noise2Void.MASKING_RANDOM_OTHER_PIXEL_VALUE)
+    dataset = BSD500(dataset_type=BSD500.TRAIN, masking_type=BSD500.MASKING_RANDOM_OTHER_PIXEL_VALUE)
     # Defining optimizer
     optimizer = optim.SGD(network.parameters(), lr=hyper_paramaters['OPTIMIZER']['LR'], momentum=hyper_paramaters['OPTIMIZER']['MOMENTUM'])
 
@@ -89,6 +89,9 @@ def train():
     loss_function.to(hyper_paramaters['MODEL']['DEVICE'])
 
     num_batches = len(dataset) // hyper_paramaters['MODEL']['BATCH_SIZE']
+
+    loss_threshold = 0.5
+
     for epoch_idx in range(hyper_paramaters['MODEL']['NUM_EPOCHS']):
         epoch_start_time = time.time()
 
@@ -115,6 +118,9 @@ def train():
             predicted_image = network(input_image)
 
             loss = loss_function(predicted_image, output_image)
+            if loss < loss_threshold:
+                loss_threshold /= 1.5
+                torch.save(network.state_dict(), os.path.join(instance_folder_path, 'Model_Loss_{}_Epoch_{}.pt'.format(round(loss, 5), str(epoch_idx).zfill(3))))
 
             loss.backward()
             optimizer.step()
@@ -124,7 +130,6 @@ def train():
             print('\tBatch (Train) Loss:', loss)
             print()
 
-        torch.save(network.state_dict(), os.path.join(instance_folder_path, 'Model_{}_Epoch_{}.pt'.format(hyper_paramaters['NETWORK'], str(epoch_idx).zfill(3))))
         epoch_end_time = time.time()
 
         print('Epoch (Train) Loss:', epoch_loss)

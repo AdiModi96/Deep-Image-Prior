@@ -1,6 +1,7 @@
-import cv2
 import os
 import sys
+
+import cv2
 
 sys.path.append('..')
 import paths

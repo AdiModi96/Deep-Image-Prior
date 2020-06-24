@@ -1,7 +1,8 @@
-import cv2
 import os
-import numpy as np
 import sys
+
+import cv2
+import numpy as np
 
 sys.path.append('..')
 import paths

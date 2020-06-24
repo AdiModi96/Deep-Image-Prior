@@ -1,9 +1,10 @@
 import os
+import sys
+
 import cv2
 import numpy as np
-from torch.utils.data import Dataset
-import sys
 import torch
+from torch.utils.data import Dataset
 
 sys.path.append('..')
 import paths
@@ -131,6 +132,7 @@ class CTC(Dataset):
             return self.instance
         else:
             return self.batch
+
 
 class Custom(Dataset):
     TRAIN = 0

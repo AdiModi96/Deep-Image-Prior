@@ -12,13 +12,11 @@ class UNET_D4(nn.Module):
         super().__init__()
 
         self.encoder_block_1 = nn.Sequential(
-            nn.Conv2d(in_channels=UNET_D4.input_channels, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=UNET_D4.input_channels, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.ReLU(inplace=True),
             nn.BatchNorm2d(num_features=64),
 
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode,
-                      bias=True),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(num_features=64),
             nn.ReLU(inplace=True),
         )
@@ -26,13 +24,11 @@ class UNET_D4(nn.Module):
         self.encoder_block_2 = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode,
-                      bias=True),
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(num_features=128),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(num_features=128),
             nn.ReLU(inplace=True),
         )
@@ -40,13 +36,11 @@ class UNET_D4(nn.Module):
         self.encoder_block_3 = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
         )
@@ -54,13 +48,11 @@ class UNET_D4(nn.Module):
         self.encoder_block_4 = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
-            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
         )
@@ -68,18 +60,15 @@ class UNET_D4(nn.Module):
         self.bottleneck = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
-            nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
 
@@ -87,13 +76,11 @@ class UNET_D4(nn.Module):
         )
 
         self.decoder_block_4 = nn.Sequential(
-            nn.Conv2d(in_channels=1024, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=1024, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
 
@@ -101,13 +88,11 @@ class UNET_D4(nn.Module):
         )
 
         self.decoder_block_3 = nn.Sequential(
-            nn.Conv2d(in_channels=512, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=512, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
 
@@ -115,13 +100,11 @@ class UNET_D4(nn.Module):
         )
 
         self.decoder_block_2 = nn.Sequential(
-            nn.Conv2d(in_channels=256, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=256, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
 
@@ -129,13 +112,11 @@ class UNET_D4(nn.Module):
         )
 
         self.decoder_block_1 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=128, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=64, out_channels=UNET_D4.input_channels, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=64, out_channels=UNET_D4.input_channels, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
         )
 
     def forward(self, tensor):
@@ -167,13 +148,11 @@ class UNET_D4_RES_CONN(nn.Module):
         super().__init__()
 
         self.encoder_block_1 = nn.Sequential(
-            nn.Conv2d(in_channels=UNET_D4.input_channels, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=UNET_D4.input_channels, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.ReLU(inplace=True),
             nn.BatchNorm2d(num_features=64),
 
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(num_features=64),
             nn.ReLU(inplace=True),
         )
@@ -181,13 +160,11 @@ class UNET_D4_RES_CONN(nn.Module):
         self.encoder_block_2 = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(num_features=128),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(num_features=128),
             nn.ReLU(inplace=True),
         )
@@ -195,13 +172,11 @@ class UNET_D4_RES_CONN(nn.Module):
         self.encoder_block_3 = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
         )
@@ -209,13 +184,11 @@ class UNET_D4_RES_CONN(nn.Module):
         self.encoder_block_4 = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
-            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
         )
@@ -223,18 +196,15 @@ class UNET_D4_RES_CONN(nn.Module):
         self.bottleneck = nn.Sequential(
             nn.MaxPool2d(kernel_size=2),
 
-            nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
+            nn.Conv2d(in_channels=1024, out_channels=1024, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode, bias=True),
             nn.BatchNorm2d(1024),
             nn.ReLU(inplace=True),
 
@@ -242,13 +212,11 @@ class UNET_D4_RES_CONN(nn.Module):
         )
 
         self.decoder_block_4 = nn.Sequential(
-            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(512),
             nn.ReLU(inplace=True),
 
@@ -256,13 +224,11 @@ class UNET_D4_RES_CONN(nn.Module):
         )
 
         self.decoder_block_3 = nn.Sequential(
-            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
 
@@ -270,13 +236,11 @@ class UNET_D4_RES_CONN(nn.Module):
         )
 
         self.decoder_block_2 = nn.Sequential(
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(128),
             nn.ReLU(inplace=True),
 
@@ -284,13 +248,11 @@ class UNET_D4_RES_CONN(nn.Module):
         )
 
         self.decoder_block_1 = nn.Sequential(
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
 
-            nn.Conv2d(in_channels=64, out_channels=UNET_D4.input_channels, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding,
-                      padding_mode=UNET_D4.convolutional_padding_mode),
+            nn.Conv2d(in_channels=64, out_channels=UNET_D4.input_channels, kernel_size=UNET_D4.convolutional_kernel_size, stride=1, padding=UNET_D4.convolutional_padding, padding_mode=UNET_D4.convolutional_padding_mode),
         )
 
     def forward(self, tensor):

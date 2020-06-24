@@ -1,11 +1,11 @@
 import numpy as np
 from torch.utils.data import DataLoader
-from datasets import Noise2Void
+from datasets import BSD500
 import matplotlib.pyplot as plt
 
 
 def test_batch(db=None):
-    BATCH_SIZE = 128
+    BATCH_SIZE = 30
     batcher = DataLoader(dataset=db, batch_size=BATCH_SIZE)
 
     batch = next(iter(batcher))
@@ -17,10 +17,10 @@ def test_batch(db=None):
         input_image, output_image = batch[0][instance_idxes[i]], batch[1][instance_idxes[i]]
 
         plt.subplot(6, 5, (2 * i) + 1)
-        plt.imshow(input_image[0], cmap='gray')
+        plt.imshow(BSD500.channels_last(input_image), cmap='gray')
 
         plt.subplot(6, 5, (2 * i) + 2)
-        plt.imshow(output_image[0], cmap='gray')
+        plt.imshow(BSD500.channels_last(output_image), cmap='gray')
 
     plt.show()
 
@@ -38,7 +38,6 @@ def test_instance(db=None):
 
     plt.show()
 
-db = Noise2Void(dataset_type=Noise2Void.VALIDATION, masking_type=Noise2Void.MASKING_FIXED_VALUE, masking_fixed_value=0.5)
-db.shuffle()
-# test_batch(db)
-test_instance(db)
+db = BSD500(dataset_type=BSD500.TRAIN, masking_type=BSD500.MASKING_RANDOM_OTHER_PIXEL_VALUE)
+test_batch(db)
+# test_instance(db)

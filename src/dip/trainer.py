@@ -1,10 +1,12 @@
 import os
 import sys
 import time
-import torch
+
 import cv2
-from torch import optim
+import torch
 from torch import backends
+from torch import optim
+
 from datasets import BSD500
 from models import CNN_D5
 
@@ -86,7 +88,6 @@ def train():
                                                                                                          epoch_idx * len(dataset) + batch_idx + 1,
                                                                                                          round(loss.item(), 5))),
                             BSD500.channels_last(BSD500.from_torch_to_numpy(predicted_image[0])) * 255)
-                # torch.save(network.state_dict(), os.path.join(instance_folder_path, '{} - Loss_{}.pt'.format(str(model_idx).zfill(3), round(loss.item(), 5))))
                 model_idx += 1
 
             epoch_loss += loss

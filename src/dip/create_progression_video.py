@@ -1,9 +1,10 @@
 import os
+import sys
+
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 from matplotlib import animation
-import sys
+from matplotlib import pyplot as plt
 
 sys.path.append('..')
 import paths
