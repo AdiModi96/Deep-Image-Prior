@@ -1,13 +1,10 @@
 import os
-import sys
+import paths
 
 import cv2
 import numpy as np
 from matplotlib import animation
 from matplotlib import pyplot as plt
-
-sys.path.append('..')
-import paths
 
 
 def root_square_error(image_1, image_2):
@@ -48,7 +45,7 @@ def animate(index):
 for i in range(45, 55):
     instance = str(i).zfill(3)
     print(instance)
-    images_folder_path = os.path.join(paths.results_folder_path, 'dip', 'Instance_' + instance)
+    images_folder_path = os.path.join(paths.results_folder_path, 'Instance_' + instance)
     if not os.path.isdir(images_folder_path):
         print('Images folder path Doesn\'t exist')
         print('Quitting')

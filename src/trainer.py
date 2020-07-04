@@ -1,5 +1,4 @@
 import os
-import sys
 import time
 
 import cv2
@@ -8,9 +7,8 @@ from torch import backends
 from torch import optim
 
 from datasets import BSD500
-from models import CNN_D5
+from models import UNET_D4
 
-sys.path.append('..')
 import paths
 
 # --------------------------------------------------------------
@@ -34,7 +32,7 @@ if torch.cuda.is_available():
 
 def train():
     # Initializing network
-    network = CNN_D5()
+    network = UNET_D4()
     network.to(DEVICE)
     network.train()
 
@@ -46,9 +44,9 @@ def train():
 
     # Finding instance folder path
     instance = 0
-    while os.path.isdir(os.path.join(paths.results_folder_path, 'dip', 'Instance_' + str(instance).zfill(3))):
+    while os.path.isdir(os.path.join(paths.results_folder_path, 'Instance_' + str(instance).zfill(3))):
         instance += 1
-    instance_folder_path = os.path.join(paths.results_folder_path, 'dip', 'Instance_' + str(instance).zfill(3))
+    instance_folder_path = os.path.join(paths.results_folder_path, 'Instance_' + str(instance).zfill(3))
     os.makedirs(instance_folder_path)
     if not os.path.isdir(paths.results_folder_path):
         os.makedirs(paths.results_folder_path)

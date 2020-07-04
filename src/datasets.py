@@ -1,13 +1,10 @@
 import os
-import sys
+import paths
 
 import cv2
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-
-sys.path.append('..')
-import paths
 
 
 class BSD500(Dataset):
